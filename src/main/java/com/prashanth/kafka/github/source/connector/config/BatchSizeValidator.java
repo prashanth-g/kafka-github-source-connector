@@ -1,9 +1,10 @@
 package com.prashanth.kafka.github.source.connector.config;
 
 import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.common.config.ConfigDef.Validator;
 import org.apache.kafka.common.config.ConfigException;
 
-public class BatchSizeValidator implements ConfigDef.Validator {
+public class BatchSizeValidator implements Validator {
 
   public void ensureValid(String name, Object value) {
     Integer batchSize = (Integer) value;

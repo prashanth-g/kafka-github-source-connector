@@ -1,5 +1,6 @@
 package com.prashanth.kafka.github.source.connector.config;
 
+import java.time.ZonedDateTime;
 import java.util.Map;
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
@@ -45,7 +46,9 @@ public class GitHubSourceConnectorConfig extends AbstractConfig {
         .define(REPO_CONFIG, Type.STRING, Importance.HIGH, REPO_DOC)
         .define(BATCH_SIZE_CONFIG, Type.INT, 100, new BatchSizeValidator(),
             Importance.LOW, BATCH_SIZE_DOC)
-        .define(SINCE_CONFIG, Type.STRING, Importance.HIGH, SINCE_DOC)
+        .define(SINCE_CONFIG, Type.STRING,
+            ZonedDateTime.now().minusYears(1).toInstant().toString(),
+            new TimeStampValidator(), Importance.HIGH, SINCE_DOC)
         .define(AUTH_USERNAME_CONFIG, Type.STRING, "", Importance.HIGH,
             AUTH_USERNAME_DOC)
         .define(AUTH_PASSWORD_CONFIG, Type.STRING, "", Importance.HIGH,
