@@ -5,12 +5,18 @@ import java.util.Map;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GithubSourceConnector extends SourceConnector {
 
+  private static Logger LOGGER = LoggerFactory.getLogger(GithubSourceConnector.class);
+  private GitHubSourceConnectorConfig config;
+  private static final String VERSION = "0.0.1";
+
   @Override
   public void start(Map<String, String> map) {
-
+    config = new GitHubSourceConnectorConfig(map);
   }
 
   @Override
@@ -35,6 +41,6 @@ public class GithubSourceConnector extends SourceConnector {
 
   @Override
   public String version() {
-    return null;
+    return VERSION;
   }
 }
