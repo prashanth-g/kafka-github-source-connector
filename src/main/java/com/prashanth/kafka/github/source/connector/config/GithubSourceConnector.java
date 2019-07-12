@@ -1,5 +1,6 @@
 package com.prashanth.kafka.github.source.connector.config;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.kafka.common.config.ConfigDef;
@@ -21,12 +22,14 @@ public class GithubSourceConnector extends SourceConnector {
 
   @Override
   public Class<? extends Task> taskClass() {
-    return null;
+    return GithubSourceConnectorTask.class;
   }
 
   @Override
   public List<Map<String, String>> taskConfigs(int i) {
-    return null;
+    ArrayList<Map<String, String>> configs = new ArrayList<>(1);
+    configs.add(config.originalsStrings());
+    return configs;
   }
 
   @Override
@@ -36,7 +39,7 @@ public class GithubSourceConnector extends SourceConnector {
 
   @Override
   public ConfigDef config() {
-    return null;
+    return GitHubSourceConnectorConfig.conf();
   }
 
   @Override
