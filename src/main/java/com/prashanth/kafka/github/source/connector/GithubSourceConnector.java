@@ -1,5 +1,6 @@
-package com.prashanth.kafka.github.source.connector.config;
+package com.prashanth.kafka.github.source.connector;
 
+import com.prashanth.kafka.github.source.connector.config.GitHubSourceConnectorConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

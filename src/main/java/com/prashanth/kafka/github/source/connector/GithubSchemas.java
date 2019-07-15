@@ -1,4 +1,4 @@
-package com.prashanth.kafka.github.source.connector.config;
+package com.prashanth.kafka.github.source.connector;
 
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.SchemaBuilder;

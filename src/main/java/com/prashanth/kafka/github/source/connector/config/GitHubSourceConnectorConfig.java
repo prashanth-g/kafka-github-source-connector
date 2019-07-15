@@ -1,5 +1,7 @@
 package com.prashanth.kafka.github.source.connector.config;
 
+import com.prashanth.kafka.github.source.connector.validator.BatchSizeValidator;
+import com.prashanth.kafka.github.source.connector.validator.TimeStampValidator;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import org.apache.kafka.common.config.AbstractConfig;

@@ -1,4 +1,4 @@
-package com.prashanth.kafka.github.source.connector.config;
+package com.prashanth.kafka.github.source.connector;
 
 import java.util.Map;
 import org.apache.kafka.connect.connector.Task;

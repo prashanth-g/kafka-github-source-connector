@@ -1,4 +1,4 @@
-package com.prashanth.kafka.github.source.connector.config;
+package com.prashanth.kafka.github.source.connector.validator;
 
 import java.time.Instant;
 import java.time.format.DateTimeParseException;

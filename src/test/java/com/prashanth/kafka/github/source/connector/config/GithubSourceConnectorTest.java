@@ -6,6 +6,7 @@ import static com.prashanth.kafka.github.source.connector.config.GitHubSourceCon
 import static com.prashanth.kafka.github.source.connector.config.GitHubSourceConnectorConfig.TOPIC_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.BATCH_SIZE_CONFIG;
 
+import com.prashanth.kafka.github.source.connector.GithubSourceConnector;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
