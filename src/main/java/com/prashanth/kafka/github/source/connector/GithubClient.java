@@ -1,7 +1,10 @@
 package com.prashanth.kafka.github.source.connector;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.prashanth.kafka.github.source.connector.config.GitHubSourceConnectorConfig;
 import java.time.Instant;
+import kong.unirest.HttpResponse;
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,5 +19,9 @@ public class GithubClient {
   GitHubSourceConnectorConfig config;
 
   public GithubClient(GitHubSourceConnectorConfig config) { this.config = config; }
+
+  protected JSONArray getNextIssues(Integer page, Instant since) throws InterruptedException {
+    HttpResponse<JsonNode> jsonResponse;
+  }
 
 }
