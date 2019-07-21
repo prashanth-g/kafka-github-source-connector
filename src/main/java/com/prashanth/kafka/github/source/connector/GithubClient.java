@@ -78,5 +78,18 @@ public class GithubClient {
         config.getBatchSize(),
         since.toString());
   }
-ß
+
+  public void sleep() throws InterruptedException {
+    long sleepTime = (long) Math.ceil(
+        (double) (XRateReset - Instant.now().getEpochSecond()) / XRateRemaining);
+    LOGGER.debug(String.format("Sleeping for %s seconds", sleepTime ));
+    Thread.sleep(1000 * sleepTime);
+  }
+
+  public void sleepIfNeed() throws InterruptedException {
+    if (XRateRemaining <= 10 && XRateRemaining > 0) {
+      LOGGER.info(String.format("Approaching limit soon, you have %s requests left", XRateRemaining));
+      sleep();
+    }
+  }
 }
