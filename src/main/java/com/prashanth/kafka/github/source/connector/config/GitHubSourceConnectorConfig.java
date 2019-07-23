@@ -2,6 +2,7 @@ package com.prashanth.kafka.github.source.connector.config;
 
 import com.prashanth.kafka.github.source.connector.validator.BatchSizeValidator;
 import com.prashanth.kafka.github.source.connector.validator.TimeStampValidator;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import org.apache.kafka.common.config.AbstractConfig;
@@ -69,8 +70,8 @@ public class GitHubSourceConnectorConfig extends AbstractConfig {
     return this.getString(BATCH_SIZE_CONFIG);
   }
 
-  public String getSince() {
-    return this.getString(SINCE_CONFIG);
+  public Instant getSince() {
+    return Instant.parse(this.getString(SINCE_CONFIG));
   }
 
   public String getOwnerConfig() {
