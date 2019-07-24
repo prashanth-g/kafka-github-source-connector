@@ -12,26 +12,26 @@ import org.apache.kafka.common.config.ConfigDef.Type;
 
 public class GitHubSourceConnectorConfig extends AbstractConfig {
 
-  static final String TOPIC_CONFIG = "topic";
-  static final String TOPIC_DOC = "Topic to write to";
+  public static final String TOPIC_CONFIG = "topic";
+  public static final String TOPIC_DOC = "Topic to write to";
 
-  static final String OWNER_CONFIG = "github.owner";
-  static final String OWNER_DOC = "Owner of the github account";
+  public static final String OWNER_CONFIG = "github.owner";
+  public static final String OWNER_DOC = "Owner of the github account";
 
-  static final String REPO_CONFIG = "github.repo";
-  static final String REPO_DOC = "Repository that ";
+  public static final String REPO_CONFIG = "github.repo";
+  public static final String REPO_DOC = "Repository that ";
 
-  static final String SINCE_CONFIG = "since.timestamp";
-  static final String SINCE_DOC = "Only issues created after this timestamp will be captured";
+  public static final String SINCE_CONFIG = "since.timestamp";
+  public static final String SINCE_DOC = "Only issues created after this timestamp will be captured";
 
-  static final String BATCH_SIZE_CONFIG = "batch.size";
-  static final String BATCH_SIZE_DOC = "Number of data points that the data can be captured";
+  public static final String BATCH_SIZE_CONFIG = "batch.size";
+  public static final String BATCH_SIZE_DOC = "Number of data points that the data can be captured";
 
-  static final String AUTH_USERNAME_CONFIG = "auth.username";
-  static final String AUTH_USERNAME_DOC = "Optional Username of the github account";
+  public static final String AUTH_USERNAME_CONFIG = "auth.username";
+  public static final String AUTH_USERNAME_DOC = "Optional Username of the github account";
 
-  static final String AUTH_PASSWORD_CONFIG = "auth.password";
-  static final String AUTH_PASSWORD_DOC = "Optional Password of the github account";
+  public static final String AUTH_PASSWORD_CONFIG = "auth.password";
+  public static final String AUTH_PASSWORD_DOC = "Optional Password of the github account";
 
   public GitHubSourceConnectorConfig(ConfigDef configDef,
       Map<String, String> parsedConfig) {
@@ -66,8 +66,8 @@ public class GitHubSourceConnectorConfig extends AbstractConfig {
     return this.getString(REPO_CONFIG);
   }
 
-  public String getBatchSize() {
-    return this.getString(BATCH_SIZE_CONFIG);
+  public Integer getBatchSize() {
+    return this.getInt(BATCH_SIZE_CONFIG);
   }
 
   public Instant getSince() {

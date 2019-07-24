@@ -1,4 +1,4 @@
-package com.prashanth.kafka.github.source.connector.config;
+package com.prashanth.kafka.github.source.connector;
 
 import static com.prashanth.kafka.github.source.connector.config.GitHubSourceConnectorConfig.AUTH_PASSWORD_CONFIG;
 import static com.prashanth.kafka.github.source.connector.config.GitHubSourceConnectorConfig.AUTH_USERNAME_CONFIG;
@@ -8,6 +8,7 @@ import static com.prashanth.kafka.github.source.connector.config.GitHubSourceCon
 import static com.prashanth.kafka.github.source.connector.config.GitHubSourceConnectorConfig.TOPIC_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.BATCH_SIZE_CONFIG;
 
+import com.prashanth.kafka.github.source.connector.config.GitHubSourceConnectorConfig;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.common.config.ConfigDef;

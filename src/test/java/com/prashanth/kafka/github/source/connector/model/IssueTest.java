@@ -1,4 +1,4 @@
-package com.prashanth.kafka.github.source.connector.config.model;
+package com.prashanth.kafka.github.source.connector.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

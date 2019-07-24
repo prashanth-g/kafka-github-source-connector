@@ -1,4 +1,4 @@
-package com.prashanth.kafka.github.source.connector.config;
+package com.prashanth.kafka.github.source.connector;
 
 import static com.prashanth.kafka.github.source.connector.config.GitHubSourceConnectorConfig.OWNER_CONFIG;
 import static com.prashanth.kafka.github.source.connector.config.GitHubSourceConnectorConfig.REPO_CONFIG;

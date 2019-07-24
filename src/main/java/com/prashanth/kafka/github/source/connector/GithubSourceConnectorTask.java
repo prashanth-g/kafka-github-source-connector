@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 public class GithubSourceConnectorTask extends SourceTask {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GithubSourceConnectorTask.class);
-  GitHubSourceConnectorConfig config;
+  public GitHubSourceConnectorConfig config;
 
   protected Instant nextQuerySince;
   protected Integer lastIssueNumber;
