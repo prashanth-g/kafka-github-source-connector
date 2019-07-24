@@ -1,19 +1,43 @@
 package com.prashanth.kafka.github.source.connector;
 
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.CREATED_AT_FIELD;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.KEY_SCHEMA;
 import static com.prashanth.kafka.github.source.connector.GithubSchemas.NEXT_PAGE_FIELD;
 import static com.prashanth.kafka.github.source.connector.GithubSchemas.NUMBER_FIELD;
 import static com.prashanth.kafka.github.source.connector.GithubSchemas.OWNER_FIELD;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.PR_FIELD;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.PR_HTML_URL_FIELD;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.PR_SCHEMA;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.PR_URL_FIELD;
 import static com.prashanth.kafka.github.source.connector.GithubSchemas.REPOSITORY_FIELD;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.STATE_FIELD;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.TITLE_FIELD;
 import static com.prashanth.kafka.github.source.connector.GithubSchemas.UPDATED_AT_FIELD;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.URL_FIELD;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.USER_FIELD;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.USER_ID_FIELD;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.USER_LOGIN_FIELD;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.USER_SCHEMA;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.USER_URL_FIELD;
+import static com.prashanth.kafka.github.source.connector.GithubSchemas.VALUE_SCHEMA;
 
 import com.prashanth.kafka.github.source.connector.config.GitHubSourceConnectorConfig;
+import com.prashanth.kafka.github.source.connector.model.Issue;
+import com.prashanth.kafka.github.source.connector.model.PullRequest;
+import com.prashanth.kafka.github.source.connector.model.User;
+import com.prashanth.kafka.github.source.connector.utils.DateUtils;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.kafka.connect.connector.Task;
+import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +69,44 @@ public class GithubSourceConnectorTask extends SourceTask {
 
   @Override
   public List<SourceRecord> poll() throws InterruptedException {
-    return null;
+    githubClient.sleepIfNeed();
+
+    // fetch data
+    final ArrayList<SourceRecord> records = new ArrayList<>();
+    JSONArray issues = githubClient.getNextIssues(nextPageToVisit, nextQuerySince);
+    // we'll count how many results we get with i
+    int i = 0;
+    for (Object obj : issues) {
+      Issue issue = Issue.fromJson((JSONObject) obj);
+      SourceRecord sourceRecord = generateSourceRecord(issue);
+      records.add(sourceRecord);
+      i += 1;
+      lastUpdatedAt = issue.getUpdatedAt();
+    }
+    if (i > 0) LOGGER.info(String.format("Fetched %s record(s)", i));
+    if (i == 100){
+      // we have reached a full batch, we need to get the next one
+      nextPageToVisit += 1;
+    }
+    else {
+      nextQuerySince = lastUpdatedAt.plusSeconds(1);
+      nextPageToVisit = 1;
+      githubClient.sleep();
+    }
+    return records;
+  }
+
+  private SourceRecord generateSourceRecord(Issue issue) {
+    return new SourceRecord(
+        sourcePartition(),
+        sourceOffset(issue.getUpdatedAt()),
+        config.getTopic(),
+        null, // partition will be inferred by the framework
+        KEY_SCHEMA,
+        buildRecordKey(issue),
+        VALUE_SCHEMA,
+        buildRecordValue(issue),
+        issue.getUpdatedAt().toEpochMilli());
   }
 
   private void initializeLastVariables(){
@@ -71,6 +132,11 @@ public class GithubSourceConnectorTask extends SourceTask {
     }
   }
 
+  @Override
+  public void stop() {
+
+  }
+
   private Map<String, String> sourcePartition() {
     Map<String, String> map = new HashMap<>();
     map.put(OWNER_FIELD, config.getOwnerConfig());
@@ -78,15 +144,48 @@ public class GithubSourceConnectorTask extends SourceTask {
     return map;
   }
 
-  @Override
-  public void stop() {
-
+  private Map<String, String> sourceOffset(Instant updatedAt) {
+    Map<String, String> map = new HashMap<>();
+    map.put(UPDATED_AT_FIELD, DateUtils.MaxInstant(updatedAt, nextQuerySince).toString());
+    map.put(NEXT_PAGE_FIELD, nextPageToVisit.toString());
+    return map;
   }
 
-  private Map<String, String> sourcePartion() {
-    Map<String, String> map = new HashMap<>();
-    map.put(OWNER_FIELD, config.getOwnerConfig());
-    map.put(REPOSITORY_FIELD, config.getRepoConfig());
-    return map;
+  private Struct buildRecordKey(Issue issue){
+    // Key Schema
+    Struct key = new Struct(KEY_SCHEMA)
+        .put(OWNER_FIELD, config.getOwnerConfig())
+        .put(REPOSITORY_FIELD, config.getRepoConfig())
+        .put(NUMBER_FIELD, issue.getNumber());
+
+    return key;
+  }
+
+  public Struct buildRecordValue(Issue issue){
+
+    Struct valueStruct = new Struct(VALUE_SCHEMA)
+        .put(URL_FIELD, issue.getUrl())
+        .put(TITLE_FIELD, issue.getTitle())
+        .put(CREATED_AT_FIELD, Date.from(issue.getCreatedAt()))
+        .put(UPDATED_AT_FIELD, Date.from(issue.getUpdatedAt()))
+        .put(NUMBER_FIELD, issue.getNumber())
+        .put(STATE_FIELD, issue.getState());
+
+    User user = issue.getUser();
+    Struct userStruct = new Struct(USER_SCHEMA)
+        .put(USER_URL_FIELD, user.getUrl())
+        .put(USER_ID_FIELD, user.getId())
+        .put(USER_LOGIN_FIELD, user.getLogin());
+    valueStruct.put(USER_FIELD, userStruct);
+
+    PullRequest pullRequest = issue.getPullRequest();
+    if (pullRequest != null) {
+      Struct prStruct = new Struct(PR_SCHEMA)
+          .put(PR_URL_FIELD, pullRequest.getUrl())
+          .put(PR_HTML_URL_FIELD, pullRequest.getHtmlUrl());
+      valueStruct.put(PR_FIELD, prStruct);
+    }
+
+    return valueStruct;
   }
 }
