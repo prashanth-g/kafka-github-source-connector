@@ -39,7 +39,7 @@ public class GithubSourceTaskTest {
   public void test() throws UnirestException {
     gitHubSourceTask.config = new GitHubSourceConnectorConfig(initialConfig());
     gitHubSourceTask.nextPageToVisit = 1;
-    gitHubSourceTask.nextQuerySince = Instant.parse("2017-01-01T00:00:00Z");
+    gitHubSourceTask.nextQuerySince = Instant.parse("2019-07-01T00:00:00Z");
     gitHubSourceTask.githubClient = new GithubClient(gitHubSourceTask.config);
     String url = gitHubSourceTask.githubClient.constructUrl(gitHubSourceTask.nextPageToVisit, gitHubSourceTask.nextQuerySince);
     System.out.println(url);

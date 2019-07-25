@@ -30,7 +30,7 @@ public class GithubClient {
     HttpResponse<JsonNode> jsonResponse;
 
     try {
-      jsonResponse = null;
+      jsonResponse = getNextIssuesAPI(page, since);
       Headers headers = jsonResponse.getHeaders();
       XRateLimit = Integer.valueOf(headers.getFirst("X-RateLimit-Limit"));
       XRateRemaining = Integer
